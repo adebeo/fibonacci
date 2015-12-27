@@ -1,0 +1,124 @@
+<%
+
+    colortable = {}
+    colorvalue = 5
+    stepColor = 25
+
+    for n in 0..9 do
+        colortable[n] = colorvalue
+        colorvalue += stepColor
+    end
+
+    @index = 1
+    suite = [@graine,@graine]
+    @maxParLigne = 24
+    @maxParLigne2 = 60
+    
+    while @index < @max do
+
+        nombre = suite[-1] + suite[-2]
+        suite.push(nombre.to_i)
+        @index +=1
+    end
+
+    @htmlFibonacci = "<table><tr>"
+    @htmlSommeDigit = "<table><tr>"
+    @htmlDernierDigit = "<table><tr>"
+
+    nbsurLaLigne = 0
+    nbsurLaLigne2 = 0
+
+    suite.each{|nombre|
+        @htmlFibonacci += "<td>"
+        @htmlSommeDigit += "<td>"
+        @htmlDernierDigit += "<td>"
+
+        if @digit
+            dernierDigit = nombre.to_s[-1]
+            @htmlDernierDigit += "<span style='background-color:rgb(#{colortable[dernierDigit.to_i]},0,0)'>"
+            @htmlDernierDigit +="#{dernierDigit}</span>"
+        end
+
+        if @sum
+            digitSum = nombre
+            while digitSum.to_s.length >1
+                digitSum = digitSum.to_s.split(//).inject(0) {|z, x| z + x.to_i}
+            end
+            @htmlSommeDigit +="<span style='background-color:rgb(0,0,#{colortable[digitSum.to_i]})'>"
+            @htmlSommeDigit += "#{digitSum.to_s}</span>"
+        end
+
+
+        @htmlFibonacci += "#{nombre.to_s}"
+        if @nbEnCours
+            @htmlSommeDigit += ":#{nombre.to_s}"
+            @htmlDernierDigit += ":#{nombre.to_s}"
+        end
+
+        @htmlFibonacci += "</td>"
+        @htmlSommeDigit += "</td>"
+        @htmlDernierDigit += "</td>"
+        nbsurLaLigne += 1
+        nbsurLaLigne2 += 1
+        if nbsurLaLigne >= @maxParLigne
+            @htmlSommeDigit += "</tr><tr>"
+            @htmlFibonacci += "</tr><tr>"
+            nbsurLaLigne = 0
+        end
+        if nbsurLaLigne2 >= @maxParLigne2
+            @htmlDernierDigit += "</tr><tr>"
+            nbsurLaLigne2 = 0
+        end
+
+    }
+    closetable = "</table>"
+    @htmlFibonacci += closetable
+    @htmlSommeDigit += closetable
+    @htmlDernierDigit += closetable
+%>
+<h1>Suite de Fibonacci avec une graine de <%=@graine.to_s%></h1>
+La suite de Fibonacci est une suites mathématique célèbre. Son principe est d'ajouter les deux derniers éléments de la suite pour le suivant. La suite commence par deux valeurs identiques appellées graines.
+<br/>
+<img src="/img/SuiteDeFibonacci.png">
+
+<%= @htmlFibonacci %>
+
+<h2>Racine numérique sur 24 colonnes</h2>
+Le tableau suivant présente la racine numérique sur 24 colonnes de chaque nombre de la suite de Fibonacci.
+L'image suivante montre la méthode de calcule de la racine numérique. Pour 121393, on ajoute 1+2+1+3+9+3 ce qui donne 19, cequi donne 10 , ce qui donne 1, la racine enumérique de 121393.
+
+<img src="/img/SumDigit.png">
+<%= @htmlSommeDigit %>
+<br/>
+<h2>Dernier digit sur 60 colonnes</h2>
+Le tableau suivant présente le dernier chiffre des nombre de la suite de fibonacci dans un tableau à 60 colonnes.
+Le schéma suivant montre que le dernier digit de 121393 est 3 ! :-)
+<img src="/img/lastNumber.png">
+<br/>
+<%= @htmlDernierDigit %>
+
+<h2>API</h2>
+
+<h3>Choisir la graine</h3>
+Ce site propose de tester la suite de Fibonacci quelle que soit la graine via ces urls:
+/graine/:nb où :nb est la graine que vous souhaitez tester. Par exemple
+<ul>
+    <li><a href='/graine/2'>/graine/2</a></li>
+    <li><a href='/graine/3'>/graine/3</a></li>
+    <li><a href='/graine/84'>/graine/84</a></li>
+</ul>    
+
+<h3>Choisir le nombre maxi</h3>
+Ce site propose de changer aussi le nombre maximum avec l'url suivante '/custom/:graine/:nb' où :graine est la graine et nb le nombre maximum de la suite
+<ul>
+    <li><a href='/custom/20/200'>/custom/20/200</a></li>
+    <li><a href='/custom/1/400'>/custom/1/400</a></li>
+    <li><a href='/custom/2/200'>/custom/2/200</a></li>
+</ul> 
+
+<h2>Conclusion</h2>
+Quelle que soit la graine, la suite de Fibonacci contient des motif de répétition:
+<ul>
+    <li> sur sa racine numérique de longueur 24 comme le nombre dheure dans une journée.</li>
+    <li> son dernier digit de longueur 60 comme le nombre de minutes dans une heure.</li>
+</ul>
